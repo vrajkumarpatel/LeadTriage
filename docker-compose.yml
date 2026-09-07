@@ -1,0 +1,38 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: leadtriage
+      POSTGRES_PASSWORD: leadtriage
+      POSTGRES_DB: leadtriage
+    volumes:
+      - leadtriage_db_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U leadtriage"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://leadtriage:leadtriage@db:5432/leadtriage
+      SECRET_KEY: ${SECRET_KEY:-change-this-to-a-random-secret-in-production}
+      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
+      ADMIN_PASSWORD_HASH: ${ADMIN_PASSWORD_HASH:?set ADMIN_PASSWORD_HASH in your .env file}
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+      NOTIFICATION_WEBHOOK_URL: ${NOTIFICATION_WEBHOOK_URL:-}
+    ports:
+      - "${API_HOST_PORT:-8000}:8000"
+
+volumes:
+  leadtriage_db_data:
