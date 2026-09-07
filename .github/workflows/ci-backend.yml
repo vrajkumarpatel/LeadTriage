@@ -1,0 +1,42 @@
+name: CI - Backend
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "backend/**"
+      - ".github/workflows/ci-backend.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "backend/**"
+      - ".github/workflows/ci-backend.yml"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements-dev.txt
+
+      - name: Lint (ruff, non-blocking)
+        run: ruff check . --exit-zero
+
+      - name: Run tests
+        env:
+          # No live Postgres and no real GROQ_API_KEY in CI — SQLite +
+          # mock classifier only, per SPEC.md's demo-mode contract.
+          ADMIN_USERNAME: admin
+          SECRET_KEY: ci-test-secret-key
+        run: pytest -v
