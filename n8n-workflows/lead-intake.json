@@ -1,0 +1,92 @@
+{
+  "name": "LeadTriage - Lead Intake",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "leadtriage-lead-intake",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "1f6a2b3c-0001-4a11-8b1a-000000000001",
+      "name": "Webhook - Incoming Lead",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [-440, 0],
+      "webhookId": "leadtriage-lead-intake"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.API_BASE_URL }}/api/v1/auth/login",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ username: $env.LEADTRIAGE_ADMIN_USERNAME, password: $env.LEADTRIAGE_ADMIN_PASSWORD }) }}",
+        "options": {}
+      },
+      "id": "1f6a2b3c-0001-4a11-8b1a-000000000002",
+      "name": "Login to LeadTriage API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-200, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.API_BASE_URL }}/api/v1/leads",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $json.access_token }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ name: $('Webhook - Incoming Lead').item.json.body.name, email: $('Webhook - Incoming Lead').item.json.body.email, phone: $('Webhook - Incoming Lead').item.json.body.phone, company: $('Webhook - Incoming Lead').item.json.body.company, message: $('Webhook - Incoming Lead').item.json.body.message, source: $('Webhook - Incoming Lead').item.json.body.source || 'n8n-webhook' }) }}",
+        "options": {}
+      },
+      "id": "1f6a2b3c-0001-4a11-8b1a-000000000003",
+      "name": "Create Lead in LeadTriage",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [40, 0]
+    }
+  ],
+  "connections": {
+    "Webhook - Incoming Lead": {
+      "main": [
+        [
+          {
+            "node": "Login to LeadTriage API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Login to LeadTriage API": {
+      "main": [
+        [
+          {
+            "node": "Create Lead in LeadTriage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsRaw": true
+  },
+  "id": "leadtriage-lead-intake-0001",
+  "versionId": "00000000-0000-4000-8000-000000000001"
+}

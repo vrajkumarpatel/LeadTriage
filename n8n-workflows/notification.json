@@ -1,0 +1,58 @@
+{
+  "name": "LeadTriage - New Lead Notification",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "leadtriage-notification",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "2a7b3c4d-0002-4a11-8b1a-000000000001",
+      "name": "Webhook - Qualification Result",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [-440, 0],
+      "webhookId": "leadtriage-notification"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.SLACK_COMPATIBLE_WEBHOOK_URL }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ text: $json.body.text, lead_id: $json.body.lead_id, classification: $json.body.classification, score: $json.body.score }) }}",
+        "options": {}
+      },
+      "id": "2a7b3c4d-0002-4a11-8b1a-000000000002",
+      "name": "Post New-Lead Alert",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-200, 0],
+      "notes": "FastAPI (backend/services/notifications.py) already builds a Slack-compatible {text, lead_id, classification, score, type} payload when it calls this webhook. This node just forwards it to the real Slack-compatible target so the format can be tweaked here without touching API code."
+    }
+  ],
+  "connections": {
+    "Webhook - Qualification Result": {
+      "main": [
+        [
+          {
+            "node": "Post New-Lead Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsRaw": true
+  },
+  "id": "leadtriage-notification-0002",
+  "versionId": "00000000-0000-4000-8000-000000000002"
+}

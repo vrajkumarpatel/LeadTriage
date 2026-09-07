@@ -1,0 +1,58 @@
+{
+  "name": "LeadTriage - Follow-Up Message",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "leadtriage-follow-up",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "3b8c4d5e-0003-4a11-8b1a-000000000001",
+      "name": "Webhook - Suggested Follow-Up",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [-440, 0],
+      "webhookId": "leadtriage-follow-up"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.SLACK_COMPATIBLE_WEBHOOK_URL }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ text: $json.body.text, lead_id: $json.body.lead_id, suggested_follow_up: $json.body.suggested_follow_up, tag: 'follow-up' }) }}",
+        "options": {}
+      },
+      "id": "3b8c4d5e-0003-4a11-8b1a-000000000002",
+      "name": "Post Follow-Up Alert",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-200, 0],
+      "notes": "FastAPI (backend/services/notifications.py) already builds a {text, lead_id, suggested_follow_up, type: 'follow_up'} payload when it calls this webhook. This node forwards it, tagged explicitly as a follow-up (not a new-lead alert), to the real Slack-compatible target."
+    }
+  ],
+  "connections": {
+    "Webhook - Suggested Follow-Up": {
+      "main": [
+        [
+          {
+            "node": "Post Follow-Up Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsRaw": true
+  },
+  "id": "leadtriage-follow-up-0003",
+  "versionId": "00000000-0000-4000-8000-000000000003"
+}
