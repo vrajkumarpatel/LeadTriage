@@ -1,0 +1,112 @@
+@import 'tailwindcss';
+
+@theme {
+  /* -- surfaces -- */
+  --color-ink: #14181f;
+  --color-ink-soft: #1e232c;
+  --color-ink-line: #2b313c;
+  --color-paper: #f4f5f2;
+  --color-surface: #ffffff;
+  --color-border: #e2e1d9;
+  --color-border-soft: #ececE6;
+
+  /* -- text -- */
+  --color-text: #14181f;
+  --color-text-muted: #5b6169;
+  --color-text-faint: #8b9098;
+  --color-text-on-ink: #f4f5f2;
+  --color-text-on-ink-muted: #9099a6;
+
+  /* -- brand -- */
+  --color-primary: #106b57;
+  --color-primary-hover: #0c5647;
+  --color-primary-soft: #dcede7;
+
+  /* -- classification signals -- */
+  --color-hot: #d94f2b;
+  --color-hot-soft: #fbe6de;
+  --color-hot-ink: #8a2c15;
+  --color-warm: #b3790a;
+  --color-warm-soft: #f7ecd3;
+  --color-warm-ink: #6e4a06;
+  --color-cold: #3f6e93;
+  --color-cold-soft: #e2ebf3;
+  --color-cold-ink: #24435c;
+
+  /* -- workflow status -- */
+  --color-status-pending: #6b7178;
+  --color-status-pending-soft: #ececea;
+  --color-status-running: #106b57;
+  --color-status-running-soft: #dcede7;
+  --color-status-success: #1f8a53;
+  --color-status-success-soft: #e0f2e7;
+  --color-status-failed: #c33b2e;
+  --color-status-failed-soft: #fbe3e0;
+
+  /* -- type -- */
+  --font-display: 'Space Grotesk', 'Segoe UI', sans-serif;
+  --font-sans: 'Manrope', 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', monospace;
+
+  --shadow-card: 0 1px 2px rgba(20, 24, 31, 0.04), 0 1px 1px rgba(20, 24, 31, 0.03);
+  --shadow-pop: 0 12px 32px -8px rgba(20, 24, 31, 0.22), 0 4px 10px -4px rgba(20, 24, 31, 0.12);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    color-scheme: light;
+  }
+
+  body {
+    margin: 0;
+    background: var(--color-paper);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background: var(--color-primary-soft);
+    color: var(--color-primary-hover);
+  }
+}
+
+@layer utilities {
+  .num {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 999px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
