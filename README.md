@@ -4,6 +4,20 @@ AI-powered lead qualification and follow-up automation — a webhook intake pipe
 
 This is an example of a business AI automation system I can build for a client: replace a manual "someone reads every form submission and decides what matters" process with a pipeline that classifies, scores, and drafts a first response automatically, while keeping a full audit trail of what happened and why.
 
+## Screenshots
+
+![Dashboard](docs/screenshots/dashboard.png)
+*Live snapshot of inbound lead quality — classification breakdown, workflow status, and the leads needing attention first.*
+
+![Leads list](docs/screenshots/leads-list.png)
+*Every qualified lead ranked by score, with classification and workflow status visible at a glance.*
+
+![Lead detail](docs/screenshots/lead-detail.png)
+*The core workflow: a lead's full qualification result — reasoning, recommended action, suggested follow-up — plus its workflow run and audit log.*
+
+![Workflow history](docs/screenshots/workflow-history.png)
+*Every qualification run tracked to completion, with retry counts for failures.*
+
 ## Problem
 
 A lead comes in through a form, a webhook, or a chat widget. Someone has to read it, decide if it's worth a same-day callback or a nurture-sequence email, and draft a response — and that triage step is the first thing that slips when volume goes up or the person doing it is on vacation. There's also usually no record of *why* a lead got prioritized the way it did, which makes it hard to improve the process later.
